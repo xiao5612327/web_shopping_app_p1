@@ -44,7 +44,7 @@
 	%>
 	<%=out_put_result%>
 	<br>
-	<a href="log_in.html">Back to Log in</a>
+	<a href="log_in.jsp">Back to Log in</a>
 
 
 </body>

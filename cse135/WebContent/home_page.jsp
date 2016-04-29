@@ -12,22 +12,13 @@
 <body>
 	<%
 		String user = request.getParameter("user_name");
-		connectJDBC get_user = new connectJDBC();
-		Boolean userName = get_user.getUsername(user);
-		
-		if(!userName){ %>
-		
-		<script type="text/javascript">
-    		alert("user name does not exist");
-		</script>
-	
-		<%}
+
 		session.setAttribute("user_name", user);
 	%>
 		
 	Welcome
 	<%=user%>
-		<form method="get" action="log_in.html">
+		<form method="get" action="log_in.jsp">
 		 <INPUT TYPE=SUBMIT VALUE="Log out">
 		</form>
 	<p>
