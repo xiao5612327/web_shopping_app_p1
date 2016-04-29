@@ -9,14 +9,6 @@
 </head>
 <body>
 
-<%
-String b = null;
-String name = request.getParameter("user_name");
-
-connectJDBC  a= new connectJDBC();
- b = a.submit(name);
-
-%>
 
 </body>
 </html>
