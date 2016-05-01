@@ -120,7 +120,7 @@
                     <input type="hidden" name="action" value="insert"/>
                     <th>&nbsp;</th>
                     <th><input value="" name="name" size="10"/></th>
-                    <th><input value="" name="description" size="15"/></th>
+                    <th><textarea name="description" rows="3" cols ="40"></textarea></th>
                     <th><input type="submit" value="Insert"/></th>
                 </form>
             </tr>
@@ -145,8 +145,8 @@
                     <input value="<%=rs.getString("category_name")%>" name="name" size="15"/>
                 </td>
 
-                <td>
-                    <input value="<%=rs.getString("description")%>" name="description" size="15"/>
+                <td><textarea name="description" rows="3" cols ="40"><%=rs.getString("description")%></textarea>
+               
                 </td>
 
                 <td><input type="submit" value="Update"></td>
