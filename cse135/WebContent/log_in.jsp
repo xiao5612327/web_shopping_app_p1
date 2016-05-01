@@ -4,35 +4,49 @@
 <html>
 <head>
 <%@ page import="cse135.*" %>
-<%@ page import="java.io.*,java.util.*" %>
+<%@ page import="java.io.*,java.util.*,java.sql.*" %>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
 	<h1>Log In</h1>
-	<form method="get">
-		Username <input type='text' name='user_name' maxlength=20 size=25>
-		<br> <INPUT TYPE=SUBMIT VALUE="Log in">
+	<form>
+		Username:
+		<input type='text' name='user_name' maxlength=20 size=25>
+		<br> 
+		<INPUT TYPE=SUBMIT VALUE="Log in">
 	</form>
 	<a href="sign_up.html">sign up</a>
 	
+	<%! public String checkEmpty(String name){
+			String message = null;
+			if(name == null)
+				message = "please enter user name!";
+			return message;
+	}%>
+	
 	<%
 		String user = request.getParameter("user_name");
+		User getUser = new User();
 		connectJDBC get_user = new connectJDBC();
-		Boolean userName = get_user.getUsername(user);
-		
+		Boolean userName = get_user.getUsername(user, getUser);
 		if(!userName){ 
 			if(user == null){
 				
 			}else{%>
 			<br>
-				user name does not exist;
+				<h4 style="color:red">user name does not exist!</h4>
 			<% }	
 	
 		}
-		else{%>
+		else{
+			session.setAttribute("user_name", user);
+			session.setAttribute("roles", getUser.getRoles());
+			
+			%>
 			<script type="text/javascript">
-            window.location.href = "home_page.jsp";
+			
+            window.location.href = "ower_home_page.jsp";
         	</script>
 		<% }
 			

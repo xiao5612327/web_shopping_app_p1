@@ -4,6 +4,10 @@
 <html>
 <head>
 <%@ page import="cse135.*" %>
+<%@ page import="java.io.*,java.util.*,java.sql.*"%>
+<%@ page import="javax.servlet.http.*,javax.servlet.*" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql"%>
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Comformation</title>
@@ -13,27 +17,52 @@
 		String out_put_result = null;
 		Boolean userName = true;
 		String user = request.getParameter("user_name");
-		//if(user.length() > 0){
-			//userName = true;
-		//}else
-			//userName = false;
+		if(user != null){
+			userName = true;
+		}else
+			userName = false;
 
 		Boolean ageRange = true;
+		int ageNo = 0;
 		String age = request.getParameter("age");
-		//if(age.length() >0){
-		//	ageRange = true;
-		//}
-		//else
-			//ageRange =false;
+		if(age != null){
+			ageNo = Integer.parseInt(age);
+			ageRange = true;
+		}
+		else
+			ageRange =false;
 		
-		if(ageRange == true && userName == true){
+		if(ageRange == true && userName == true){%>
+		
+			<sql:setDataSource var="snapshot" driver="org.postgresql.Driver"
+     		url="jdbc:postgresql://localhost:5433/shopping"
+     		user="postgres"  password="Asdf!23"/>
+ 
+			<sql:query dataSource="${snapshot}" var="result">
+			SELECT user_name from users where user_name = user;
+			</sql:query>
+			
+			<c:forEach var="row" items="${result.rows}">
+			
+			<% 
+				String total = request.getParameter("row.user_name");
+				if(total == user){
+					out.println("user name have already exists!");
+					break;
+			}
+			%>
+			</c:forEach>
+			<% 
 			
 			out_put_result = "You have successfully signed up.";
 			String state = request.getParameter("state");
 			String roles = request.getParameter("role");
-
+			Boolean check;
 			connectJDBC input_user= new connectJDBC();
-	 		input_user.submit(user, roles, age, state);
+			check = input_user.submit(user, roles, ageNo, state);
+			if(!check){
+				out_put_result = "user name already exist!";
+			}
 		}
 		else{
 			if(userName == false){
@@ -45,7 +74,11 @@
 	<%=out_put_result%>
 	<br>
 	<a href="log_in.jsp">Back to Log in</a>
-
+	<% 
+		out_put_result = null;
+		user = null;
+		age = null;
+	%>
 
 </body>
 </html>
