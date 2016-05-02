@@ -42,6 +42,7 @@
 				}
 			%>
         
+        	<h2>Search categories</h2>
             <% 	
             	index = 0;
 				while(index < rowCount){ 
