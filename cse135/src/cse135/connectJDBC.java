@@ -114,7 +114,7 @@ public class connectJDBC {
 
 		pstmt = c.createStatement();
 		try {
-			String query = "INSERT INTO products (name, sku, category, price) VALUES ('" + name + "', '" + sku
+			String query = "INSERT INTO products (product_name, sku, category, price) VALUES ('" + name + "', '" + sku
 					+ "', '" + category + "', '" + price + "');";
 			pstmt.executeUpdate(query);
 			c.close();
