@@ -17,7 +17,7 @@
 		String out_put_result = null;
 		Boolean userName = true;
 		String user = request.getParameter("user_name");
-		if(user != null){
+		if(user != null && user != ""){
 			userName = true;
 		}else
 			userName = false;
@@ -25,9 +25,13 @@
 		Boolean ageRange = true;
 		int ageNo = 0;
 		String age = request.getParameter("age");
-		if(age != null){
-			ageNo = Integer.parseInt(age);
+		if(age != null && age != ""){
 			ageRange = true;
+		    try{
+		    	ageNo = Integer.parseInt(age);
+		    }catch(NumberFormatException e){
+		    	ageRange = false;
+		    }
 		}
 		else
 			ageRange =false;
@@ -35,7 +39,7 @@
 		if(ageRange == true && userName == true){%>
 		
 			<sql:setDataSource var="snapshot" driver="org.postgresql.Driver"
-     		url="jdbc:postgresql://localhost:5433/shopping"
+     		url="jdbc:postgresql://localhost:5432/shopping"
      		user="postgres"  password="Asdf!23"/>
  
 			<sql:query dataSource="${snapshot}" var="result">
