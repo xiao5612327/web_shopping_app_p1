@@ -31,10 +31,10 @@ CREATE TABLE shopping_cart (
 CREATE TABLE history (
     id          SERIAL PRIMARY KEY,
     data		VARCHAR(30),
-    amount   	VARCHAR(30),
-    price       VARCHAR(30),
+    amount   	integer,
+    price       integer,
     product_id  int references products(id) NOT NULL,
-    user_name 	VARCHAR(30) references users(user_name) NOT NULL
+    user_name 	int references users(id) NOT NULL
 );
 
 insert into products (name, sku, price, category) values('good', '1232', '123', 'book')

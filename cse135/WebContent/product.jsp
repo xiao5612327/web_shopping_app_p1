@@ -65,9 +65,9 @@
 			String category;
 			category = request.getParameter("category");
 			if (category == null || category.equals(" "))
-		    	resultset = statement.executeQuery("select * from products where LOWER(name) like LOWER('%"+search+"%')"); 
+		    	resultset = statement.executeQuery("select * from products where LOWER(product_name) like LOWER('%"+search+"%')"); 
 			else
-				resultset = statement.executeQuery("select * from products where LOWER(name) like LOWER('%"+search+"%') and category = '"+category+"'") ; 
+				resultset = statement.executeQuery("select * from products where LOWER(product_name) like LOWER('%"+search+"%') and category = '"+category+"'"); 
         %>
         <!-- html table format -->
             <table border="1">
@@ -91,7 +91,7 @@
 
                 <%-- a id to track all insert delete and update --%>
                 <td>
-                    <input value="<%=resultset.getString("name")%>" name="updated_name" size="15"/>
+                    <input value="<%=resultset.getString("product_name")%>" name="updated_name" size="15"/>
                 </td>
                 
                 <td>
