@@ -70,5 +70,59 @@ public class connectJDBC {
 		return false;
 
 	}
+	
+	public Boolean checkSKU(String sku)
+	{
+		Connection c = null;
+		Statement pstmt = null;
+		ResultSet resultSet;
+
+		try {
+			Class.forName("org.postgresql.Driver");
+			c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		
+		try {
+			pstmt = c.createStatement();
+			resultSet = pstmt.executeQuery("SELECT sku FROM PRODUCTS WHERE sku='"+sku+"'");
+			if (!resultSet.isBeforeFirst() ) {    
+				 return true;
+			} 
+			c.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public Boolean insertProduct(String name, String sku, String category, String price) throws SQLException {
+		Connection c = null;
+		Statement pstmt = null;
+
+		try {
+			Class.forName("org.postgresql.Driver");
+			c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+
+		pstmt = c.createStatement();
+		try {
+			String query = "INSERT INTO products (name, sku, category, price) VALUES ('" + name + "', '" + sku
+					+ "', '" + category + "', '" + price + "');";
+			pstmt.executeUpdate(query);
+			c.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
+
+	}
 
 }
