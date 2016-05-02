@@ -45,7 +45,7 @@ public class connectJDBC {
 
 		try {
 			Class.forName("org.postgresql.Driver");
-			c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");
+			c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/shopping", "postgres", "Asdf!23");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -70,6 +70,29 @@ public class connectJDBC {
 		return false;
 
 	}
+
+	public Boolean checkInt(String integer)
+	{
+		Boolean bool = true;
+		int intHelper = 0;
+	    try{
+	    	intHelper = Integer.parseInt(integer);
+	    }catch(NumberFormatException e){
+	    	bool = false;
+	    }
+		return bool;
+	}
+	public Boolean checkDouble(String doubleParam)
+	{
+		Boolean bool = true;
+		double doubleHelper = 0;
+	    try{
+	    	doubleHelper = Double.parseDouble(doubleParam);
+	    }catch(NumberFormatException e){
+	    	bool = false;
+	    }
+		return bool;
+	}
 	
 	public Boolean checkSKU(String sku)
 	{
@@ -79,7 +102,7 @@ public class connectJDBC {
 
 		try {
 			Class.forName("org.postgresql.Driver");
-			c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");
+			c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/shopping", "postgres", "Asdf!23");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -105,7 +128,7 @@ public class connectJDBC {
 
 		try {
 			Class.forName("org.postgresql.Driver");
-			c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");
+			c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/shopping", "postgres", "Asdf!23");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -130,7 +153,7 @@ public class connectJDBC {
 
 		try {
 			Class.forName("org.postgresql.Driver");
-			c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");
+			c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/shopping", "postgres", "Asdf!23");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());

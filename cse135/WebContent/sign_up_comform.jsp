@@ -14,6 +14,8 @@
 </head>
 <body>
 	<%
+		connectJDBC conn = new connectJDBC();
+	
 		String out_put_result = null;
 		Boolean userName = true;
 		String user = request.getParameter("user_name");
@@ -26,15 +28,10 @@
 		int ageNo = 0;
 		String age = request.getParameter("age");
 		if(age != null && age != ""){
-			ageRange = true;
-		    try{
-		    	ageNo = Integer.parseInt(age);
-		    }catch(NumberFormatException e){
-		    	ageRange = false;
-		    }
+			ageRange = conn.checkInt(age);
 		}
 		else
-			ageRange =false;
+			ageRange = false;
 		
 		if(ageRange == true && userName == true){%>
 		
