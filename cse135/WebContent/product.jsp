@@ -14,31 +14,118 @@
         <td valign="top">
             <%-- -------- import page from home page -------- --%>
             <jsp:include page="ower_home_page.jsp" />
+       
+            <%-- -------- List of categories for saerch ------- --%>
+            <%@ page import="java.sql.*"%>
+            
+            <% 
+	        	Class.forName("org.postgresql.Driver");
+	            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");  
+	            Statement statement = connection.createStatement() ;
+	            PreparedStatement pstmt = null;
+	            ResultSet resultset; 
+	       	%>
+	       	
+	       	<%	
+	       		resultset = statement.executeQuery("select count(*) from categories") ;
+				resultset.next();
+				int rowCount = Integer.parseInt(resultset.getString(1));
+				String[] categories = new String[rowCount];
+				resultset = statement.executeQuery("select category_name from categories") ;
+			%>
+			
+			<% 	
+				int index = 0;
+				while(resultset.next()){ 
+					categories[index] = resultset.getString(1);
+					index++;
+				}
+			%>
+        
+            <% 	
+            	index = 0;
+				while(index < rowCount){ 
+					index++;
+			%>
+					<form action="product.jsp" method="get">
+						<input type="submit" value="<%= categories[index-1] %>" style="width:200px">
+						<% if (request.getParameter("search") == null) { %>
+								<input type="hidden" name="search" value=""/>
+						<% }
+						   else { %>
+						   		<input type="hidden" name="search" value="<%=request.getParameter("search")%>"/>
+						<% } %>
+						<input type="hidden" name='category' value="<%= categories[index-1] %>">
+						
+					</form>
+			<% } %>
         </td>
         
         <td>
-				<%@ page import="java.sql.*"%>
+				
 
 		
         <H1>Products</H1>
 
-        <% 
-        	Class.forName("org.postgresql.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");  
-            Statement statement = connection.createStatement() ;
-            ResultSet resultset; 
-        %>
+        
 		
+		<%-- -------- UPDATE category -------- --%>
+        <%
+        	String action = request.getParameter("action");
+            // update is called
+            if (action != null && action.equals("update")) {
+
+            	// Begin communicate with database
+                connection.setAutoCommit(false);
+
+                // updata sql 
+                pstmt = connection.prepareStatement("UPDATE products SET product_name = ?, sku = ?, price = ?, category = ? WHERE id=?");
+                    
+                pstmt.setString(1, request.getParameter("updated_name"));
+                pstmt.setInt(2, Integer.parseInt(request.getParameter("updated_sku")));
+                pstmt.setInt(3, Integer.parseInt(request.getParameter("updated_price")));
+                pstmt.setString(4, request.getParameter("updated_category"));
+                pstmt.setInt(5, Integer.parseInt(request.getParameter("id")));
+                int row = pstmt.executeUpdate();
+                  
+                // Commit communicate with database
+                connection.commit();
+                connection.setAutoCommit(true);
+            }
+        %>
+            
+        <%-- -------- DELETE catagory -------- --%>
+        <%
+            // Check if a delete is requested
+            if (action != null && action.equals("delete")) {
+
+                // Begin communicate with database
+                connection.setAutoCommit(false);
+
+                pstmt = connection.prepareStatement("DELETE FROM products WHERE id = ?");
+
+                pstmt.setInt(1, Integer.parseInt(request.getParameter("id")));
+                int row = pstmt.executeUpdate();
+
+                // Commit communicate with database
+                connection.commit();
+                connection.setAutoCommit(true);
+            }
+        %>
+            
 		<%-- -------- Product Insert -------- --%>
 		<H2>Product Insert</H2>
-		<%	resultset = statement.executeQuery("select category_name from categories") ; %>
+		
 		<form action="product_insert.jsp" method="post">
 			<br> Product name: <input type='text' name='product_name'>
 			<br> Product SKU: <input type='text' name='product_sku'>
 			<br> Category: <select name='product_category'>
 					<option value=' '> </option>
-					<% while(resultset.next()){ %>
-						<option value='<%= resultset.getString(1) %>'> <%= resultset.getString(1) %> </option>
+					<% 	index = 0;
+						while(index < rowCount){ 
+							index++;
+					%>
+						<option value='<%= categories[index-1] %>'> <%= categories[index-1] %> </option>
 					<% } %>
 				</select>
 			<br> Product price: <input type='text' name='product_price'>
@@ -47,17 +134,12 @@
 		
 		<%-- -------- Product Search -------- --%>
 		<h2>Product Search</h2>
-		<%    resultset = statement.executeQuery("select category_name from categories") ; %>
 		<form action="product.jsp" method="post">
 		  	<br> Search query: <input type='text' name='search'>
-			<br> Category: <select name='category'>
-				<option value=' '> </option>
-				<% while(resultset.next()){ %>
-					<option value='<%= resultset.getString(1) %>'> <%= resultset.getString(1) %> </option>
-				<% } %>
-			</select>
 		  	<input type="submit" value="Search">
 		</form>
+		
+		
         
         <%-- -------- Product Table -------- --%>
 		<%
@@ -67,7 +149,9 @@
 			if (category == null || category.equals(" "))
 		    	resultset = statement.executeQuery("select * from products where LOWER(product_name) like LOWER('%"+search+"%')"); 
 			else
+
 				resultset = statement.executeQuery("select * from products where LOWER(product_name) like LOWER('%"+search+"%') and category = '"+category+"'"); 
+
         %>
         <!-- html table format -->
             <table border="1">
@@ -88,7 +172,7 @@
             <tr>
                 <form action="product.jsp" method="POST">
                     <input type="hidden" name="action" value="update"/>
-
+					<input type="hidden" name="id" value="<%=resultset.getInt("id")%>"/>
                 <%-- a id to track all insert delete and update --%>
                 <td>
                     <input value="<%=resultset.getString("product_name")%>" name="updated_name" size="15"/>
@@ -99,7 +183,18 @@
                 </td>
                 
                 <td>
-                	<input value="<%=resultset.getString("category")%>" name="updated_category" size="15"/>
+                	<select name='updated_category'>
+                		<% String default_category = resultset.getString("category"); %>
+						<option selected=<%=default_category%>><%=default_category%></option>
+					<% 	index = 0;
+						while(index < rowCount){ 
+							index++;
+							if(categories[index-1].equals(resultset.getString("category")))
+								continue;
+					%>
+						<option value='<%= categories[index-1] %>'> <%= categories[index-1] %> </option>
+					<% } %>
+					</select>
                 </td>
                 
                 <td>
@@ -112,6 +207,7 @@
                 
                 <form action="product.jsp" method="POST">
                     <input type="hidden" name="action" value="delete"/>
+					<input type="hidden" name="id" value="<%=resultset.getInt("id")%>"/>
                     <%-- Button --%>
                 <td><input type="submit" value="Delete"/></td>
                 </form>

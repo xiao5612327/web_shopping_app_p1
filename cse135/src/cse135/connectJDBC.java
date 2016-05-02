@@ -70,6 +70,29 @@ public class connectJDBC {
 		return false;
 
 	}
+
+	public Boolean checkInt(String integer)
+	{
+		Boolean bool = true;
+		int intHelper = 0;
+	    try{
+	    	intHelper = Integer.parseInt(integer);
+	    }catch(NumberFormatException e){
+	    	bool = false;
+	    }
+		return bool;
+	}
+	public Boolean checkDouble(String doubleParam)
+	{
+		Boolean bool = true;
+		double doubleHelper = 0;
+	    try{
+	    	doubleHelper = Double.parseDouble(doubleParam);
+	    }catch(NumberFormatException e){
+	    	bool = false;
+	    }
+		return bool;
+	}
 	
 	public Boolean checkSKU(String sku)
 	{
@@ -114,7 +137,7 @@ public class connectJDBC {
 
 		pstmt = c.createStatement();
 		try {
-			String query = "INSERT INTO products (name, sku, category, price) VALUES ('" + name + "', '" + sku
+			String query = "INSERT INTO products (product_name, sku, category, price) VALUES ('" + name + "', '" + sku
 					+ "', '" + category + "', '" + price + "');";
 			pstmt.executeUpdate(query);
 			c.close();
