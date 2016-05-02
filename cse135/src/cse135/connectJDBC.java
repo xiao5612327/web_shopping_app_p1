@@ -124,5 +124,30 @@ public class connectJDBC {
 		return true;
 
 	}
+	public Boolean insertShopping(String name, String amount, String price) throws SQLException {
+		Connection c = null;
+		Statement pstmt = null;
+
+		try {
+			Class.forName("org.postgresql.Driver");
+			c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+
+		pstmt = c.createStatement();
+		try {
+			String query = "INSERT INTO shopping_cart (name, amount, price) VALUES ('" + name + "', '" + amount
+					+ "', '" + price + "');";
+			pstmt.executeUpdate(query);
+			c.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
+
+	}
 
 }

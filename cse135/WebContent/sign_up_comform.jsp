@@ -74,11 +74,7 @@
 	<%=out_put_result%>
 	<br>
 	<a href="log_in.jsp">Back to Log in</a>
-	<% 
-		out_put_result = null;
-		user = null;
-		age = null;
-	%>
+
 
 </body>
 </html>

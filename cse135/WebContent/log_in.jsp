@@ -43,6 +43,7 @@
 			session.setAttribute("user_name", user);
 			session.setAttribute("roles", getUser.getRoles());
 			
+			session.setAttribute("shopping_list_count", 0);
 			%>
 			<script type="text/javascript">
 			

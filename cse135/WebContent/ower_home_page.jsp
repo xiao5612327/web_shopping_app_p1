@@ -15,9 +15,8 @@
 		String roles = (String) session.getAttribute("roles");
 	%>
 
-	Welcome
-	<%=roles%>
-	<%=user%>
+	<h1>Welcome: <%=roles%> <%=user%></h1>
+	
 	
 	<ul>
 		<li><a href="categories.jsp">Categories Page</a></li>

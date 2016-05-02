@@ -3,21 +3,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-
-<%@page import="java.util.*, cse135.*" %>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
-<table>
+<body>
+	<table>
 
 	<%
 		String user = (String) session.getAttribute("user_name");
-		String product = request.getParameter("updated_name");
-		session.setAttribute("product_name", product);
-		session.setAttribute("product_price", request.getParameter("updated_price"));
+
 	%>
-	<a href="shopping_cart.jsp" >Buy Shopping Cart</a>
 	<br>
 	<h1>Welcome: <%=user%></h1>
 	
@@ -25,6 +21,7 @@
         <td>
 		<%@ page import="java.sql.*"%>
 
+        <H1>Products Bought:</H1>
 
         <% 
         	Class.forName("org.postgresql.Driver");
@@ -32,30 +29,15 @@
             Statement statement = connection.createStatement() ;
             ResultSet resultset; 
         %>
-		
-		
-   
-	
-	<form action="order_process.jsp" method="post">
-	 	<p>Product Picked: <%=product%></p>
-		<p>
-			Amount: <input type="text" size="4" name="amount" />
-		<p />
-		<input type="submit" value="Click to Order" />
-	</form>
 
-	    <H1>Products Shopping Cart</H1>
         <%-- -------- Product Table -------- --%>
 		<%
-
-			resultset = statement.executeQuery("select * from shopping_cart") ; 
+			resultset = statement.executeQuery("select name from shopping_cart") ; 
         %>
         <!-- html table format -->
             <table border="1">
             <tr>                
             	<th>Name</th>
-            	<th>Amount</th>
-                <th>Price</th>
    
             </tr>
 
@@ -72,25 +54,18 @@
                 <td>
                     <input value="<%=resultset.getString("name")%>" name="shopping_cart_name" size="15"/>
                 </td>
-                
-                <td>
-                    <input value="<%=resultset.getString("amount")%>" name="shopping_cart_amount" size="15"/>
-                </td>
-                
-                <td>
-                    <input value="<%=resultset.getString("price")%>" name="shopping_cart_price" size="15"/>
-                </td>
 
                 </form>
-                
             </tr>
 
             <%
                 }
             %>
-        
         </td>
     </tr>
 </table>
 </body>
+<br>
+<a href="product_browsing.jsp" >Product Browsing</a>
+
 </html>
