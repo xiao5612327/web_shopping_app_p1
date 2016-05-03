@@ -44,17 +44,7 @@
 		alert("Inserted new product.");
 	}
 	</SCRIPT>
-		<% 
-		String roles = (String) session.getAttribute("roles");
 
-		if(roles == null){
-			if(roles.equals("customer")){%>
-			<SCRIPT TYPE="text/javascript">
-			alert("Request is invalid!");
-			window.location.href = "log_in.jsp"
-			</SCRIPT>
-		<%}
-		}%>
 <table>
     <tr>
         <td valign="top">

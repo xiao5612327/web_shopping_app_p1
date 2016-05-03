@@ -38,7 +38,6 @@
 	<h1>Welcome: <%=roles%> <%=user%></h1>
 
 	<form action="log_in.jsp" method="post">
-		<% session.setAttribute("user_name" , null);%>
 		<INPUT TYPE=SUBMIT VALUE="Log out">
 	</form>
 	

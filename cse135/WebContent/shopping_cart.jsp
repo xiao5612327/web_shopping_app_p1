@@ -13,18 +13,12 @@
 		String user = (String) session.getAttribute("user_name");
 		String roles = (String) session.getAttribute("roles");
 
-	if(user == null ){%>
-		<SCRIPT TYPE="text/javascript">
-		alert("Request is invalid!");
-		window.location.href = "log_in.jsp"
-		</SCRIPT>
-	<%}
+
 	
 	%>
 	<br>
 	<h1>Welcome: <%=user%></h1>
 	<form action="log_in.jsp" method="post">
-		<% session.setAttribute("user_name" , null);%>
 		<INPUT TYPE=SUBMIT VALUE="Log out">
 	</form>
     <tr>     
