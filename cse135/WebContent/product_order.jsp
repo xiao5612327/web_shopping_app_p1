@@ -10,9 +10,25 @@
 </head>
 <body>
 <table>
-
 	<%
+		
 		String user = (String) session.getAttribute("user_name");
+		String roles;
+		if(session.getAttribute("roles") == null)
+			roles = "null";
+		else
+			roles = (String) session.getAttribute("roles");
+
+		if ( user == null || user.trim().length() == 0 || roles.equals("null") ){
+		%>
+			<SCRIPT TYPE="text/javascript">
+			alert("Not signed in!");
+			window.location.href = "log_in.jsp"
+			</SCRIPT>
+		<%}
+	%>
+	
+	<%
 		String product = request.getParameter("updated_name");
 		session.setAttribute("product_name", product);
 		session.setAttribute("product_price", request.getParameter("updated_price"));

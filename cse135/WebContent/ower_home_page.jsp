@@ -25,11 +25,16 @@
 	<%
 		
 		String user = (String) session.getAttribute("user_name");
-		String roles = (String) session.getAttribute("roles");
+		String roles;
+		if(session.getAttribute("roles") == null)
+			roles = "null";
+		else
+			roles = (String) session.getAttribute("roles");
 
-		if(user == null){%>
+		if ( user == null || user.trim().length() == 0 || roles.equals("null") ){
+		%>
 			<SCRIPT TYPE="text/javascript">
-			alert("Request is invalid!");
+			alert("Not signed in!");
 			window.location.href = "log_in.jsp"
 			</SCRIPT>
 		<%}
@@ -38,6 +43,7 @@
 	<h1>Welcome: <%=roles%> <%=user%></h1>
 
 	<form action="log_in.jsp" method="post">
+		
 		<INPUT TYPE=SUBMIT VALUE="Log out">
 	</form>
 	

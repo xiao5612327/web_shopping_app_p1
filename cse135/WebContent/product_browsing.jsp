@@ -8,14 +8,29 @@
 </head>
 <body>
 <table>
+
 	<%
-		session.setAttribute("product_name", null);
-		String user = (String) session.getAttribute("user_name");
-		String roles = (String) session.getAttribute("roles");
-
-
 		
+		String user = (String) session.getAttribute("user_name");
+		String roles;
+		if(session.getAttribute("roles") == null)
+			roles = "null";
+		else
+			roles = (String) session.getAttribute("roles");
+
+		if ( user == null || user.trim().length() == 0 || roles.equals("null") ){
+			System.out.println("home page null");%>
+			<SCRIPT TYPE="text/javascript">
+			alert("Not signed in!");
+			window.location.href = "log_in.jsp"
+			</SCRIPT>
+		<%}
 	%>
+	
+	<%
+		session.setAttribute("product_name", null);		
+	%>
+	
 	<a href="shopping_cart.jsp" >Buy Shopping Cart</a>
 	<br>
 	<h1>Welcome: <%=roles%> <%=user%></h1>

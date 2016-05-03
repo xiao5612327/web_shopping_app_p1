@@ -9,6 +9,24 @@
 <title>order_process</title>
 </head>
 <body>
+	<%
+		
+		String username = (String) session.getAttribute("user_name");
+		String roles;
+		if(session.getAttribute("roles") == null)
+			roles = "null";
+		else
+			roles = (String) session.getAttribute("roles");
+
+		if ( username == null || username.trim().length() == 0 || roles.equals("null") ){
+		%>
+			<SCRIPT TYPE="text/javascript">
+			alert("Not signed in!");
+			window.location.href = "log_in.jsp"
+			</SCRIPT>
+		<%}
+	%>
+	
 	<SCRIPT TYPE="text/javascript">
 	function invalidAmount()
 	{

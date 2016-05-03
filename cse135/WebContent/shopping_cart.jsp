@@ -11,12 +11,23 @@
 	<table>
 
 	<%
+		
 		String user = (String) session.getAttribute("user_name");
-		String roles = (String) session.getAttribute("roles");
+		String roles;
+		if(session.getAttribute("roles") == null)
+			roles = "null";
+		else
+			roles = (String) session.getAttribute("roles");
 
-
-	
+		if ( user == null || user.trim().length() == 0 || roles.equals("null") || session.getAttribute("user_id") == null ){
+		%>
+			<SCRIPT TYPE="text/javascript">
+			alert("Not signed in!");
+			window.location.href = "log_in.jsp"
+			</SCRIPT>
+		<%}
 	%>
+	
 	<br>
 	<h1>Welcome: <%=user%></h1>
 	<form action="log_in.jsp" method="post">
@@ -105,23 +116,28 @@
     </tr>
 </table>
 
-<form action="confirmation.jsp" method="post">
+<form name="myForm" action="confirmation.jsp" onsubmit="return validateForm()" method="post">
 	Enter Your Credit Card Numbers here:
 	<br>
 	<input type='text' name='credit_card' maxlength=20 size=35>
-	
-	<% connectJDBC conn = new connectJDBC(); 
-		Boolean credit = conn.checkInt(request.getParameter("credit_card"));
-		if(credit)
-		{	%>
-			<br>
-			<h4 style="color:red">The provided name <%=user %> is not known.</h4>
-            window.location.href = "shopping_cart.jsp";
-		<% } 
-		else
-		{ %>
+		<SCRIPT TYPE="text/javascript">
+		function validateForm() {
+			var x = document.forms["myForm"]["credit_card"].value;
+			if(x == null || x == "") {
+				alert("Enter a valid credit card number.");
+				return false;
+			}
+			if (Number(x) === parseInt(x, 10))
+			{
+			    return true;
+			}
+			else{
+			    alert("Enter a valid credit card number.")
+			    return false;
+			}
+		}
+		</script>			
 	<INPUT TYPE=SUBMIT VALUE="Purchase">
-	<% } %>
 </form>
 	
 </body>

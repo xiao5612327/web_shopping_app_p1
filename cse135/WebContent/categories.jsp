@@ -8,25 +8,58 @@
 <%@page import="java.util.*, cse135.category.*" %>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+
 <title>Category Page</title>
 
-  
-</head>
-<body>
-	<% 
-		String roles = (String) session.getAttribute("roles");
+<SCRIPT TYPE="text/javascript">
+	function notSignedIn()
+	{
+		alert("Not signed in.");
+		window.location.href = "log_in.jsp";
+	}
+	</SCRIPT>
+	
 
-		if(roles == null){
-			if(roles.equals("customer")){%>
+
+	<% 
+		String roles;
+		if(session.getAttribute("roles") == null)
+		{
+			roles = "null";
+			System.out.println(roles.length());
+		}
+		else
+			roles = (String) session.getAttribute("roles");
+			
+		System.out.println("role: " + roles);
+
+
+		//if ( roles == null || roles.trim().length() == 0 || roles.equals(""))
+		if (roles.equals("null")){
+			%>
 			<SCRIPT TYPE="text/javascript">
-			alert("Request is invalid!");
-			window.location.href = "log_in.jsp"
+			alert("Not signed in.");
+			window.location.href = "log_in.jsp";
 			</SCRIPT>
-		<%}
-		}%>
+			
+		<% 
+		} 
+		
+		else if(roles.equals("customer")){
+			%>
+			<SCRIPT TYPE="text/javascript">
+			alert("This page is available to owners only.");
+			window.location.href = "ower_home_page.jsp";
+			</SCRIPT>
+		<% } %>
+</head>
+
+<body>
+	
 <table>
     <tr>
-    
         <td valign="top">
             <%-- -------- import page from home page -------- --%>
             <jsp:include page="ower_home_page.jsp" />

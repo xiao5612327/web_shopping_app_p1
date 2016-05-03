@@ -13,17 +13,23 @@
 	<table>
 
 	<%
+		
 		String user = (String) session.getAttribute("user_name");
-	
-	//check empty user
-	if(user == null){%>
-	<SCRIPT TYPE="text/javascript">
-	alert("Request is invalid!");
-	window.location.href = "log_in.jsp"
-	</SCRIPT>
+		String roles;
+		if(session.getAttribute("roles") == null)
+			roles = "null";
+		else
+			roles = (String) session.getAttribute("roles");
+
+		if ( user == null || user.trim().length() == 0 || roles.equals("null") ){
+		%>
+			<SCRIPT TYPE="text/javascript">
+			alert("Not signed in!");
+			window.location.href = "log_in.jsp"
+			</SCRIPT>
 		<%}
-	
 	%>
+	
 	<br>
 	<h1>Welcome: <%=user%></h1>
 	<form action="log_in.jsp" method="post">
