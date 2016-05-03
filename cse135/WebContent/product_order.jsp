@@ -31,17 +31,17 @@
 
         <% 
         	Class.forName("org.postgresql.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");  
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/shopping", "postgres", "Asdf!23");  
             Statement statement = connection.createStatement() ;
             ResultSet resultset; 
         %>
-		
 	<form action="order_process.jsp" method="post">
 	 	<p>Product Picked: <%=product%></p>
 		<p>
 			Amount: <input type="text" size="10" name="amount" />
 		<p />
 		<input type="submit" value="Click to Order" />
+	
 	</form>
 
 	    <H1>Products Shopping Cart</H1>

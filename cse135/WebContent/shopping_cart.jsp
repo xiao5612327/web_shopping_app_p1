@@ -3,6 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<%@ page import="cse135.*" %>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>shopping_cart</title>
 </head>
@@ -29,7 +30,7 @@
 
         <% 
         	Class.forName("org.postgresql.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");  
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/shopping", "postgres", "Asdf!23");  
             Statement statement = connection.createStatement() ;
             ResultSet resultset; 
         %>
@@ -109,7 +110,18 @@
 	<br>
 	<input type='text' name='credit_card' maxlength=20 size=35>
 	
+	<% connectJDBC conn = new connectJDBC(); 
+		Boolean credit = conn.checkInt(request.getParameter("credit_card"));
+		if(credit)
+		{	%>
+			<br>
+			<h4 style="color:red">The provided name <%=user %> is not known.</h4>
+            window.location.href = "shopping_cart.jsp";
+		<% } 
+		else
+		{ %>
 	<INPUT TYPE=SUBMIT VALUE="Purchase">
+	<% } %>
 </form>
 	
 </body>

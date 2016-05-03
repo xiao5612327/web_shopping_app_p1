@@ -42,7 +42,7 @@
      
             try {
             	Class.forName("org.postgresql.Driver");
-    			c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");
+    			c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/shopping", "postgres", "Asdf!23");
     			
     			ResultSet resultset = null; 
             	Statement statement1 = c.createStatement() ;
@@ -121,10 +121,7 @@
                 // Check if a delete is requested
                 if (action != null && action.equals("delete")) {
                 	
-                    // Begin communicate with database
-                    resultset = statement1.executeQuery("select * from products where category_id = '"+(int)session.getAttribute("id")+"'") ;
-                	 
-                	if(resultset.next()){ 
+                    
                     c.setAutoCommit(false);
 
                     pstmt = c.prepareStatement("DELETE FROM categories WHERE id = ?");
@@ -135,10 +132,6 @@
                     // Commit communicate with database
                     c.commit();
                     c.setAutoCommit(true);
-                	}
-                	else{
-                		
-                	}
                 }
             %>
 

@@ -199,7 +199,23 @@
 
                 // updata sql 
                 pstmt = connection.prepareStatement("UPDATE products SET product_name = ?, sku = ?, price = ?, category_id = ? WHERE id=?");
-                    
+
+                PreparedStatement pstmtShoppingCart = null;
+                PreparedStatement pstmtHistory = null;
+                
+                pstmtHistory = connection.prepareStatement("UPDATE history SET data = ?, price = ? WHERE id=?");
+                pstmtShoppingCart = connection.prepareStatement("UPDATE shopping_cart SET name = ?, price = ? WHERE id=?");
+
+
+                pstmtHistory.setString(1, request.getParameter("updated_name"));
+                pstmtHistory.setInt(2, Integer.parseInt(request.getParameter("updated_price")));
+                pstmtHistory.setInt(3, Integer.parseInt(request.getParameter("id")));
+                
+                pstmtShoppingCart.setString(1, request.getParameter("updated_name"));
+                pstmtShoppingCart.setInt(2, Integer.parseInt(request.getParameter("updated_price")));
+                pstmtShoppingCart.setInt(3, Integer.parseInt(request.getParameter("id")));
+                
+                
                 pstmt.setString(1, request.getParameter("updated_name"));
                 pstmt.setInt(2, Integer.parseInt(request.getParameter("updated_sku")));
                 pstmt.setInt(3, Integer.parseInt(request.getParameter("updated_price")));
@@ -207,6 +223,8 @@
                 int ca_id = Integer.parseInt(temp1);
                 pstmt.setInt(4, ca_id);
                 pstmt.setInt(5, Integer.parseInt(request.getParameter("id")));
+                int rowHistory = pstmtHistory.executeUpdate();
+                int rowShoppingCart = pstmtShoppingCart.executeUpdate();
                 int row = pstmt.executeUpdate();
                   
                 // Commit communicate with database
@@ -222,11 +240,21 @@
 
                 // Begin communicate with database
                 connection.setAutoCommit(false);
-
+                PreparedStatement pstmtShoppingCart = null;
+                PreparedStatement pstmtHistory = null;
+                
                 pstmt = connection.prepareStatement("DELETE FROM products WHERE id = ?");
+                pstmtHistory = connection.prepareStatement("DELETE FROM history WHERE id = ?");
+                pstmtShoppingCart = connection.prepareStatement("DELETE FROM shopping_cart WHERE id = ?");
 
                 pstmt.setInt(1, Integer.parseInt(request.getParameter("id")));
+                pstmtHistory.setInt(1, Integer.parseInt(request.getParameter("id")));
+                pstmtShoppingCart.setInt(1, Integer.parseInt(request.getParameter("id")));
+
+                int rowHistory = pstmtHistory.executeUpdate();
+                int rowShoppingCart = pstmtShoppingCart.executeUpdate();
                 int row = pstmt.executeUpdate();
+
 
                 // Commit communicate with database
                 connection.commit();
