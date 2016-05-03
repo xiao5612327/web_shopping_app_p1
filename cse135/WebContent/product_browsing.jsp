@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>Products Browsing</title>
 </head>
 <body>
 <table>
@@ -22,28 +22,70 @@
     <tr>     
         <td>
 		<%@ page import="java.sql.*"%>
+		<% 
+	        	Class.forName("org.postgresql.Driver");
+	            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");  
+	            Statement statement = connection.createStatement() ;
+	            PreparedStatement pstmt = null;
+	            ResultSet resultset; 
+	       	%>
+	       	
+	       	<%	
+	       		resultset = statement.executeQuery("select count(*) from categories") ;
+				resultset.next();
+				int rowCount = Integer.parseInt(resultset.getString(1));
+				String[] categories = new String[rowCount];
+				resultset = statement.executeQuery("select category_name from categories") ;
+			%>
+			
+			<% 	
+				int index = 0;
+				while(resultset.next()){ 
+					categories[index] = resultset.getString(1);
+					index++;
+				}
+			%>
+        
+        	<h2>Search categories</h2>
+            <% 	
+            	index = 0;
+				while(index < rowCount){ 
+					index++;
+			%>
+					<form action="product_browsing.jsp" method="get">
+						<input type="submit" value="<%= categories[index-1] %>" style="width:200px">
+						<% if (request.getParameter("search") == null) { %>
+								<input type="hidden" name="search" value=""/>
+						<% }
+						   else { %>
+						   		<input type="hidden" name="search" value="<%=request.getParameter("search")%>"/>
+						<% } %>
+						<input type="hidden" name='category' value="<%= categories[index-1] %>">
+						
+					</form>
+			<% } %>
+					<form action="product_browsing.jsp" method="get">
+						<input type="submit" value="All Categories" style="width:200px">
+						<% if (request.getParameter("search") == null) { %>
+								<input type="hidden" name="search" value=""/>
+						<% }
+						   else { %>
+						   		<input type="hidden" name="search" value="<%=request.getParameter("search")%>"/>
+						<% } %>
+						<input type="hidden" name='category' value="">
+						
+					</form>
+        </td>
+       <td>
 
 		
         <H1>Products Browsing</H1>
-
-        <% 
-        	Class.forName("org.postgresql.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");  
-            Statement statement = connection.createStatement() ;
-            ResultSet resultset; 
-        %>
 		
 		
 		<h2>Product Search</h2>
 		<%    resultset = statement.executeQuery("select category_name from categories") ; %>
 		<form action="product_browsing.jsp" method="post">
 		  	<br> Search query: <input type='text' name='search'>
-			<br> Category: <select name='category'>
-				<option value=' '> </option>
-				<% while(resultset.next()){ %>
-					<option value='<%= resultset.getString(1) %>'> <%= resultset.getString(1) %> </option>
-				<% } %>
-			</select>
 		  	<input type="submit" value="Search">
 		</form>
         
@@ -55,7 +97,7 @@
 			if (category == null || category.equals(" "))
 		    	resultset = statement.executeQuery("select * from products where LOWER(product_name) like LOWER('%"+search+"%')"); 
 			else
-				resultset = statement.executeQuery("select * from products where LOWER(product_name) like LOWER('%"+search+"%') and category = '"+category+"'") ; 
+				resultset = statement.executeQuery("select * from products where LOWER(product_name) like LOWER('%"+search+"%') and category like '%"+category+"%'") ; 
         %>
         <!-- html table format -->
             <table border="1">

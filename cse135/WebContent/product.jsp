@@ -272,7 +272,6 @@
 			if (category == null || category.equals(" "))
 		    	resultset = statement.executeQuery("select * from products where LOWER(product_name) like LOWER('%"+search+"%')"); 
 			else
-
 				resultset = statement.executeQuery("select * from products where LOWER(product_name) like LOWER('%"+search+"%') and category like '%"+category+"%'"); 
 
         %>
