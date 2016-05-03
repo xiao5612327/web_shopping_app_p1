@@ -4,11 +4,47 @@
 
 <HTML>
     <HEAD>
+    	<%@ page import="cse135.*" %>
         <TITLE>Products</TITLE>
     </HEAD>
 
     <BODY>
     
+  	<SCRIPT TYPE="text/javascript">
+	function invalidName()
+	{
+		alert("Invalid product name.");
+	}
+	</SCRIPT>
+	
+	<SCRIPT TYPE="text/javascript">
+	function invalidSKU()
+	{
+		alert("Not a unique product SKU.");
+	}
+	</SCRIPT>
+	
+	<SCRIPT TYPE="text/javascript">
+	function invalidCategory()
+	{
+		alert("No product category provided.");
+	}
+	</SCRIPT>
+	
+	<SCRIPT TYPE="text/javascript">
+	function invalidPrice()
+	{
+		alert("Invalid product price.");
+	}
+	</SCRIPT>
+	
+	<SCRIPT TYPE="text/javascript">
+	function inserted()
+	{
+		alert("Inserted new product.");
+	}
+	</SCRIPT>
+	
 <table>
     <tr>
         <td valign="top">
@@ -60,6 +96,17 @@
 						
 					</form>
 			<% } %>
+					<form action="product.jsp" method="get">
+						<input type="submit" value="All Categories" style="width:200px">
+						<% if (request.getParameter("search") == null) { %>
+								<input type="hidden" name="search" value=""/>
+						<% }
+						   else { %>
+						   		<input type="hidden" name="search" value="<%=request.getParameter("search")%>"/>
+						<% } %>
+						<input type="hidden" name='category' value="">
+						
+					</form>
         </td>
         
         <td>
@@ -68,11 +115,74 @@
 		
         <H1>Products</H1>
 
-        
+        <%-- -------- INSERT category -------- --%>
+            <%
+                String action = request.getParameter("action");
+                
+            	//do insert if insert called
+                if (action != null && action.equals("insert")) {
+
+                	//begin communicate with database
+                    connection.setAutoCommit(false);
+                	
+                	// Do parameter checks
+                	String insertName = request.getParameter("product_name");
+					String insertSku = request.getParameter("product_sku");
+					String insertCategory = request.getParameter("product_category");
+					String insertPrice = request.getParameter("product_price");
+					
+					int priceInt = -1;
+					if ( insertPrice == null || insertPrice.trim().length() == 0 ) {}
+					else priceInt = Integer.parseInt(insertPrice);
+					
+					connectJDBC conn = new connectJDBC();
+					// Check product name
+					// Check if valid name
+					if ( insertName == null || insertName.trim().length() == 0 )
+					{ %>
+						<script> invalidName(); </script>
+					<% }
+					// Check if SKU isn't unique
+					else if ( insertSku == null || insertSku.trim().length() == 0 || !conn.checkSKU(insertSku))
+					{ %>
+						<script> invalidSKU(); </script>
+					<% }
+					
+					// Check if category wasn't provided
+					else if ( insertCategory == null || insertCategory.trim().length() == 0 || insertCategory.equals(" "))
+					{ %>
+						<script> invalidCategory(); </script>
+					<% }
+					
+					// Check if price is positive
+					else if ( insertPrice == null || insertPrice.trim().length() == 0 || priceInt < 0)
+					{ %>
+						<script> invalidPrice(); </script>
+					<% }
+					
+					else
+					{
+	                    // insert into category table
+	                    pstmt = connection.prepareStatement("INSERT INTO products ( product_name, sku, price, category) VALUES (?,?,?,?)");
+	                    		
+	                    pstmt.setString(1, request.getParameter("product_name"));
+	                    pstmt.setInt(2, Integer.parseInt(request.getParameter("product_sku")));
+	                    pstmt.setInt(3, Integer.parseInt(request.getParameter("product_price")));
+	                    pstmt.setString(4, request.getParameter("product_category"));
+	
+	                    int row = pstmt.executeUpdate();
+	 
+	                    //end communicate with database
+	                    connection.commit();
+	                    connection.setAutoCommit(true);
+	                    %> <script> inserted(); </script> <%
+					}
+                    
+                }
+            %>
 		
 		<%-- -------- UPDATE category -------- --%>
         <%
-        	String action = request.getParameter("action");
             // update is called
             if (action != null && action.equals("update")) {
 
@@ -116,8 +226,8 @@
             
 		<%-- -------- Product Insert -------- --%>
 		<H2>Product Insert</H2>
-		
-		<form action="product_insert.jsp" method="post">
+		<form action="product.jsp" method="post">
+            <input type="hidden" name="action" value="insert"/>
 			<br> Product name: <input type='text' name='product_name'>
 			<br> Product SKU: <input type='text' name='product_sku'>
 			<br> Category: <select name='product_category'>
@@ -130,12 +240,24 @@
 					<% } %>
 				</select>
 			<br> Product price: <input type='text' name='product_price'>
+			<% if (request.getParameter("search") == null) { %>
+						<input type="hidden" name="search" value=""/>
+			<% }
+			   else { %>
+					<input type="hidden" name="search" value="<%=request.getParameter("search")%>"/>
+			<% } %>
+			<% if (request.getParameter("category") == null) { %>
+					<input type="hidden" name="category" value=""/>
+			<% }
+			   else { %>
+			   		<input type="hidden" name="category" value="<%=request.getParameter("category")%>"/>
+			<% } %>
 			<input type="submit" value="Insert New Product">
 		</form>
 		
 		<%-- -------- Product Search -------- --%>
 		<h2>Product Search</h2>
-		<form action="product.jsp" method="post">
+		<form action="product.jsp" method="get">
 		  	<br> Search query: <input type='text' name='search'>
 		  	<input type="submit" value="Search">
 		</form>
@@ -151,7 +273,7 @@
 		    	resultset = statement.executeQuery("select * from products where LOWER(product_name) like LOWER('%"+search+"%')"); 
 			else
 
-				resultset = statement.executeQuery("select * from products where LOWER(product_name) like LOWER('%"+search+"%') and category = '"+category+"'"); 
+				resultset = statement.executeQuery("select * from products where LOWER(product_name) like LOWER('%"+search+"%') and category like '%"+category+"%'"); 
 
         %>
         <!-- html table format -->
@@ -174,6 +296,18 @@
                 <form action="product.jsp" method="POST">
                     <input type="hidden" name="action" value="update"/>
 					<input type="hidden" name="id" value="<%=resultset.getInt("id")%>"/>
+					<% if (request.getParameter("search") == null) { %>
+								<input type="hidden" name="search" value=""/>
+					<% }
+					   else { %>
+					   		<input type="hidden" name="search" value="<%=request.getParameter("search")%>"/>
+					<% } %>
+					<% if (request.getParameter("category") == null) { %>
+							<input type="hidden" name="category" value=""/>
+					<% }
+					   else { %>
+					   		<input type="hidden" name="category" value="<%=request.getParameter("category")%>"/>
+					<% } %>
                 <%-- a id to track all insert delete and update --%>
                 <td>
                     <input value="<%=resultset.getString("product_name")%>" name="updated_name" size="15"/>
@@ -209,6 +343,18 @@
                 <form action="product.jsp" method="POST">
                     <input type="hidden" name="action" value="delete"/>
 					<input type="hidden" name="id" value="<%=resultset.getInt("id")%>"/>
+					<% if (request.getParameter("search") == null) { %>
+								<input type="hidden" name="search" value=""/>
+					<% }
+					   else { %>
+					   		<input type="hidden" name="search" value="<%=request.getParameter("search")%>"/>
+					<% } %>
+					<% if (request.getParameter("category") == null) { %>
+							<input type="hidden" name="category" value=""/>
+					<% }
+					   else { %>
+					   		<input type="hidden" name="category" value="<%=request.getParameter("category")%>"/>
+					<% } %>
                     <%-- Button --%>
                 <td><input type="submit" value="Delete"/></td>
                 </form>
