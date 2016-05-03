@@ -13,14 +13,27 @@
   
 </head>
 <body>
+	<% 
+		String roles = (String) session.getAttribute("roles");
+
+		if(roles == null){
+			if(roles.equals("customer")){%>
+			<SCRIPT TYPE="text/javascript">
+			alert("Request is invalid!");
+			window.location.href = "log_in.jsp"
+			</SCRIPT>
+		<%}
+		}%>
 <table>
     <tr>
+    
         <td valign="top">
             <%-- -------- import page from home page -------- --%>
             <jsp:include page="ower_home_page.jsp" />
         </td>
         <td>
 				<%@ page import="java.sql.*"%>
+				 <% session.setAttribute("id", 0); %>
             <%-- -------- connect to database -------- --%>
             <%
             Connection c =  null;
@@ -30,6 +43,10 @@
             try {
             	Class.forName("org.postgresql.Driver");
     			c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");
+    			
+    			ResultSet resultset = null; 
+            	Statement statement1 = c.createStatement() ;
+            	
             %>
             
             <%-- -------- INSERT category -------- --%>
@@ -38,7 +55,17 @@
                 
             	//do insert if insert called
                 if (action != null && action.equals("insert")) {
-
+                	String checkName = request.getParameter("name");
+                	
+                	//checking categories name is not null
+                	if( checkName == null || checkName.trim().length() == 0){
+                		%> 
+            
+						<h3 style="color:red">Data modification failure!  Category Name Can't Be Null</h3>
+                		<% 
+                		
+                		
+                	}else{
                 	//begin communicate with database
                     c.setAutoCommit(false);
 
@@ -53,6 +80,7 @@
                     //end communicate with database
                     c.commit();
                     c.setAutoCommit(true);
+                	}
                 }
             %>
             
@@ -60,7 +88,16 @@
             <%
                 // update is called
                 if (action != null && action.equals("update")) {
-
+					String checkName = request.getParameter("name");
+                	if( checkName == null || checkName.trim().length() == 0){
+                		%> 
+                		
+            
+						<h3 style="color:red">Data modification failure! Category Name Can't Be Null</h3>
+                		<% 
+                		
+                		
+                	}else{
                     // Begin communicate with database
                     c.setAutoCommit(false);
 
@@ -75,6 +112,7 @@
                     // Commit communicate with database
                     c.commit();
                     c.setAutoCommit(true);
+                	}
                 }
             %>
             
@@ -82,8 +120,11 @@
             <%
                 // Check if a delete is requested
                 if (action != null && action.equals("delete")) {
-
+                	
                     // Begin communicate with database
+                    resultset = statement1.executeQuery("select * from products where category_id = '"+(int)session.getAttribute("id")+"'") ;
+                	 
+                	if(resultset.next()){ 
                     c.setAutoCommit(false);
 
                     pstmt = c.prepareStatement("DELETE FROM categories WHERE id = ?");
@@ -94,6 +135,10 @@
                     // Commit communicate with database
                     c.commit();
                     c.setAutoCommit(true);
+                	}
+                	else{
+                		
+                	}
                 }
             %>
 
@@ -104,6 +149,7 @@
 
                 // select sql get infor
                 rs = statement.executeQuery("SELECT * FROM categories");
+                
             %>
             
             <!-- html talbe format -->
@@ -129,16 +175,18 @@
             <%
                 //loop to display the table
                 while (rs.next()) {
+                	
             %>
 
             <tr>
                 <form action="categories.jsp" method="POST">
                     <input type="hidden" name="action" value="update"/>
                     <input type="hidden" name="id" value="<%=rs.getInt("id")%>"/>
-
-                <%-- a id to track all insert delete and updata --%>
+                   
+                <%-- a id to track all insert delete and update --%>
                 <td>
                     <%=rs.getInt("id")%>
+                   
                 </td>
 
                 <td>
@@ -152,11 +200,23 @@
                 <td><input type="submit" value="Update"></td>
                 </form>
                 
+                <% 
+			    	 resultset = statement1.executeQuery("select * from products where category_id = '"+rs.getInt("id")+"'") ;
+                	 
+                	
+                	if(!resultset.next()){ 
+                     %>
                 <form action="categories.jsp" method="POST">
                     <input type="hidden" name="action" value="delete"/>
                     <input type="hidden" value="<%=rs.getInt("id")%>" name="id"/>
+                     <% session.setAttribute("id", rs.getInt("id")); %>
                     <%-- Button --%>
-                <td><input type="submit" value="Delete"/></td>
+               
+                   
+                	<td><input type="submit" value="Delete"/></td>
+                	
+                	<%}%>
+                	
                 </form>
             </tr>
 

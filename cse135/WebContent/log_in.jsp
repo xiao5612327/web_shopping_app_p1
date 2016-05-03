@@ -6,7 +6,7 @@
 <%@ page import="cse135.*" %>
 <%@ page import="java.io.*,java.util.*,java.sql.*" %>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>log_in</title>
 </head>
 <body>
 	<h1>Log In</h1>
@@ -35,14 +35,13 @@
 				
 			}else{%>
 			<br>
-				<h4 style="color:red">user name does not exist!</h4>
+				<h4 style="color:red">The provided name <%=user %> is not known.</h4>
 			<% }	
 	
 		}
 		else{
 			session.setAttribute("user_name", user);
 			session.setAttribute("roles", getUser.getRoles());
-			
 			session.setAttribute("shopping_list_count", 0);
 			%>
 			<script type="text/javascript">

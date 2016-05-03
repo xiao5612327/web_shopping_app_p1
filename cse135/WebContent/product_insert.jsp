@@ -6,7 +6,7 @@
 <%@ page import="cse135.*" %>
 <%@ page import="java.io.*,java.util.*,java.sql.*,java.lang.*"%>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>product_insert</title>
 </head>
 <body>
 	<SCRIPT TYPE="text/javascript">

@@ -6,19 +6,30 @@
 <%@ page import="java.io.*,java.util.*, javax.servlet.*" %>
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>confirmation</title>
 </head>
 <body>
-<body>
+
 	<table>
 
 	<%
 		String user = (String) session.getAttribute("user_name");
-
+	
+	//check empty user
+	if(user == null){%>
+	<SCRIPT TYPE="text/javascript">
+	alert("Request is invalid!");
+	window.location.href = "log_in.jsp"
+	</SCRIPT>
+		<%}
+	
 	%>
 	<br>
 	<h1>Welcome: <%=user%></h1>
-	
+	<form action="log_in.jsp" method="post">
+		<% session.setAttribute("user_name" , null);%>
+		<INPUT TYPE=SUBMIT VALUE="Log out">
+	</form>
     <tr>     
         <td>
 		<%@ page import="java.sql.*"%>
@@ -41,7 +52,7 @@
 
         <%-- -------- Product Table -------- --%>
 		<%
-			resultset = statement.executeQuery("select * from shopping_cart") ; 
+			resultset = statement.executeQuery("select * from shopping_cart where user_id = '" +(int)session.getAttribute("user_id")+ "'") ; 
         %>
         <!-- html table format -->
             <table border="1">
@@ -68,7 +79,7 @@
 					
 					connection.setAutoCommit(false);
 					
-					stmt = connection.prepareStatement("insert into history (data, amount, price, product_id, user_name)"+
+					stmt = connection.prepareStatement("insert into history (data, amount, price, product_id, user_name_id)"+
                 			" values (? , ?, ?, ?, ?)");
 					stmt.setString(1, date.toString());
 					stmt.setInt(2, Integer.parseInt(amount));
@@ -98,7 +109,7 @@
             connection.setAutoCommit(false);
         	PreparedStatement stmt1;
 
-			stmt1 = connection.prepareStatement("TRUNCATE TABLE shopping_cart");
+			stmt1 = connection.prepareStatement("delete From shopping_cart where user_id ='" +(int)session.getAttribute("user_id") + "'");
 
 			
 			 int rowCount = stmt1.executeUpdate();

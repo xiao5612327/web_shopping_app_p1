@@ -5,7 +5,7 @@ import java.sql.*;
 import cse135.User;
 
 public class connectJDBC {
-	public Boolean submit(String user, String role_value, int age_value, String state_value) throws SQLException {
+	public Boolean submit(String user, String role_value, String age_value, String state_value) throws SQLException {
 
 		Connection c = null;
 		Statement pstmt = null;
@@ -147,10 +147,11 @@ public class connectJDBC {
 		return true;
 
 	}
-	public Boolean insertShopping(String name, String amount, String price) throws SQLException {
+	public Boolean insertShopping(String name, String amount, String price, int user_name) throws SQLException {
 		Connection c = null;
 		Statement pstmt = null;
-
+		ResultSet resultset = null;
+		
 		try {
 			Class.forName("org.postgresql.Driver");
 			c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");
@@ -162,8 +163,10 @@ public class connectJDBC {
 
 		pstmt = c.createStatement();
 		try {
-			String query = "INSERT INTO shopping_cart (name, amount, price) VALUES ('" + name + "', '" + amount
-					+ "', '" + price + "');";
+			
+	
+			String query = "INSERT INTO shopping_cart (name, amount, price, user_id) VALUES ('" + name + "', '" + amount
+					+ "', '" + price + "', '"+ user_name+ "');";
 			pstmt.executeUpdate(query);
 			c.close();
 		} catch (Exception e) {

@@ -44,7 +44,17 @@
 		alert("Inserted new product.");
 	}
 	</SCRIPT>
-	
+		<% 
+		String roles = (String) session.getAttribute("roles");
+
+		if(roles == null){
+			if(roles.equals("customer")){%>
+			<SCRIPT TYPE="text/javascript">
+			alert("Request is invalid!");
+			window.location.href = "log_in.jsp"
+			</SCRIPT>
+		<%}
+		}%>
 <table>
     <tr>
         <td valign="top">
@@ -67,13 +77,19 @@
 				resultset.next();
 				int rowCount = Integer.parseInt(resultset.getString(1));
 				String[] categories = new String[rowCount];
-				resultset = statement.executeQuery("select category_name from categories") ;
+				
+				resultset = statement.executeQuery("select * from categories") ;
 			%>
 			
 			<% 	
 				int index = 0;
+				String cat_id = "";
 				while(resultset.next()){ 
-					categories[index] = resultset.getString(1);
+					categories[index] = resultset.getString("category_name");
+					cat_id = Integer.toString(resultset.getInt("id"));
+					session.setAttribute(cat_id, categories[index]);
+					session.setAttribute(categories[index], cat_id);
+
 					index++;
 				}
 			%>
@@ -85,7 +101,7 @@
 					index++;
 			%>
 					<form action="product.jsp" method="get">
-						<input type="submit" value="<%= categories[index-1] %>" style="width:200px">
+						<input type="submit" value="<%= categories[index-1] %>"  style="width:200px">
 						<% if (request.getParameter("search") == null) { %>
 								<input type="hidden" name="search" value=""/>
 						<% }
@@ -163,12 +179,14 @@
 					else
 					{
 	                    // insert into category table
-	                    pstmt = connection.prepareStatement("INSERT INTO products ( product_name, sku, price, category) VALUES (?,?,?,?)");
+	                    pstmt = connection.prepareStatement("INSERT INTO products ( product_name, sku, price, category_id) VALUES (?,?,?,?)");
 	                    		
 	                    pstmt.setString(1, request.getParameter("product_name"));
 	                    pstmt.setInt(2, Integer.parseInt(request.getParameter("product_sku")));
 	                    pstmt.setInt(3, Integer.parseInt(request.getParameter("product_price")));
-	                    pstmt.setString(4, request.getParameter("product_category"));
+	                    String temp = (String)session.getAttribute(request.getParameter("product_category"));
+	                    int ca_id = Integer.parseInt(temp);
+	                    pstmt.setInt(4, ca_id);
 	
 	                    int row = pstmt.executeUpdate();
 	 
@@ -190,12 +208,14 @@
                 connection.setAutoCommit(false);
 
                 // updata sql 
-                pstmt = connection.prepareStatement("UPDATE products SET product_name = ?, sku = ?, price = ?, category = ? WHERE id=?");
+                pstmt = connection.prepareStatement("UPDATE products SET product_name = ?, sku = ?, price = ?, category_id = ? WHERE id=?");
                     
                 pstmt.setString(1, request.getParameter("updated_name"));
                 pstmt.setInt(2, Integer.parseInt(request.getParameter("updated_sku")));
                 pstmt.setInt(3, Integer.parseInt(request.getParameter("updated_price")));
-                pstmt.setString(4, request.getParameter("updated_category"));
+                String temp1 = (String)session.getAttribute(request.getParameter("updated_category"));
+                int ca_id = Integer.parseInt(temp1);
+                pstmt.setInt(4, ca_id);
                 pstmt.setInt(5, Integer.parseInt(request.getParameter("id")));
                 int row = pstmt.executeUpdate();
                   
@@ -266,14 +286,25 @@
         
         <%-- -------- Product Table -------- --%>
 		<%
+			Statement ps = null;
+        	ResultSet rs; 
 			String search = request.getParameter("search");
 			String category;
 			category = request.getParameter("category");
-			if (category == null || category.equals(" "))
+			ps= connection.createStatement() ;
+			rs = ps.executeQuery("select * from categories where category_name = '"+category +"'" ); 
+			
+			if (category == null || category.equals(" ")){
 		    	resultset = statement.executeQuery("select * from products where LOWER(product_name) like LOWER('%"+search+"%')"); 
-			else
-				resultset = statement.executeQuery("select * from products where LOWER(product_name) like LOWER('%"+search+"%') and category like '%"+category+"%'"); 
+			}else{
 
+				if(rs.next()){
+					resultset = statement.executeQuery("select * from products where LOWER(product_name) like LOWER('%"+search+"%') and category_id = '"+rs.getInt("id")+"'"); 
+				}else{
+					resultset = statement.executeQuery("select * from products"); 
+
+				}
+			}
         %>
         <!-- html table format -->
             <table border="1">
@@ -318,12 +349,15 @@
                 
                 <td>
                 	<select name='updated_category'>
-                		<% String default_category = resultset.getString("category"); %>
+                		<% 
+                			String cate_id = resultset.getString("category_id");
+                			String default_category = (String)session.getAttribute(cate_id); %>
 						<option selected=<%=default_category%>><%=default_category%></option>
 					<% 	index = 0;
 						while(index < rowCount){ 
 							index++;
-							if(categories[index-1].equals(resultset.getString("category")))
+							
+							if(categories[index-1].equals(default_category))
 								continue;
 					%>
 						<option value='<%= categories[index-1] %>'> <%= categories[index-1] %> </option>

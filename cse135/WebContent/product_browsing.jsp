@@ -12,12 +12,23 @@
 		session.setAttribute("product_name", null);
 		String user = (String) session.getAttribute("user_name");
 		String roles = (String) session.getAttribute("roles");
+
+		if(user == null){%>
+			<SCRIPT TYPE="text/javascript">
+			alert("Request is invalid!");
+			window.location.href = "log_in.jsp"
+			</SCRIPT>
+		<%}
+		
 	%>
 	<a href="shopping_cart.jsp" >Buy Shopping Cart</a>
 	<br>
 	<h1>Welcome: <%=roles%> <%=user%></h1>
 	
-	
+	<form action="log_in.jsp" method="post">
+		<% session.setAttribute("user_name" , null);%>
+		<INPUT TYPE=SUBMIT VALUE="Log out">
+	</form>
 
     <tr>     
         <td>
@@ -28,20 +39,32 @@
 	            Statement statement = connection.createStatement() ;
 	            PreparedStatement pstmt = null;
 	            ResultSet resultset; 
+	            
 	       	%>
 	       	
 	       	<%	
+	       		resultset = statement.executeQuery("select * from users where user_name = '" + user + "'");
+	       		if(resultset.next()){
+	       	
+	       			session.setAttribute("user_id", resultset.getInt("id"));
+	       		}
 	       		resultset = statement.executeQuery("select count(*) from categories") ;
 				resultset.next();
 				int rowCount = Integer.parseInt(resultset.getString(1));
 				String[] categories = new String[rowCount];
-				resultset = statement.executeQuery("select category_name from categories") ;
+				resultset = statement.executeQuery("select * from categories") ;
 			%>
 			
+
 			<% 	
 				int index = 0;
+				String cat_id = "";
 				while(resultset.next()){ 
-					categories[index] = resultset.getString(1);
+					categories[index] = resultset.getString("category_name");
+					cat_id = Integer.toString(resultset.getInt("id"));
+					session.setAttribute(cat_id, categories[index]);
+					session.setAttribute(categories[index], cat_id);
+
 					index++;
 				}
 			%>
@@ -83,7 +106,7 @@
 		
 		
 		<h2>Product Search</h2>
-		<%    resultset = statement.executeQuery("select category_name from categories") ; %>
+		<%    resultset = statement.executeQuery("select * from categories") ; %>
 		<form action="product_browsing.jsp" method="post">
 		  	<br> Search query: <input type='text' name='search'>
 		  	<input type="submit" value="Search">
@@ -91,13 +114,25 @@
         
         <%-- -------- Product Table -------- --%>
 		<%
+			Statement ps = null;
+        	ResultSet rs; 
 			String search = request.getParameter("search");
 			String category;
 			category = request.getParameter("category");
-			if (category == null || category.equals(" "))
+			ps= connection.createStatement() ;
+			rs = ps.executeQuery("select * from categories where category_name = '"+category +"'" ); 
+			
+			if (category == null || category.equals(" ")){
 		    	resultset = statement.executeQuery("select * from products where LOWER(product_name) like LOWER('%"+search+"%')"); 
-			else
-				resultset = statement.executeQuery("select * from products where LOWER(product_name) like LOWER('%"+search+"%') and category like '%"+category+"%'") ; 
+			}else{
+
+				if(rs.next()){
+					resultset = statement.executeQuery("select * from products where LOWER(product_name) like LOWER('%"+search+"%') and category_id = '"+rs.getInt("id")+"'"); 
+				}else{
+					resultset = statement.executeQuery("select * from products"); 
+
+				}
+			}
         %>
         <!-- html table format -->
             <table border="1">
@@ -129,7 +164,7 @@
                 </td>
                 
                 <td>
-                	<input value="<%=resultset.getString("category")%>" name="updated_category" size="15"/>
+                	<input value="<%=(String)session.getAttribute(resultset.getString("category_id")) %>" name="updated_category" size="15"/>
                 </td>
                 
                 <td>

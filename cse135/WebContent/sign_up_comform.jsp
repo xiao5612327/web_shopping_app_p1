@@ -60,7 +60,7 @@
 			String roles = request.getParameter("role");
 			Boolean check;
 			connectJDBC input_user= new connectJDBC();
-			check = input_user.submit(user, roles, ageNo, state);
+			check = input_user.submit(user, roles, age, state);
 			if(!check){
 				out_put_result = "user name already exist!";
 			}

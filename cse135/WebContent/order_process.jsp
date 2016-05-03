@@ -4,9 +4,9 @@
 <html>
 <head>
 <%@page import="java.util.*, cse135.*" %>
-
+<%@ page import="java.sql.*"%>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>order_process</title>
 </head>
 <body>
 	<SCRIPT TYPE="text/javascript">
@@ -37,8 +37,32 @@
 				<%
 			}
 			else{
-		
-				conn.insertShopping(product, quantity, price);
+				
+	        	Class.forName("org.postgresql.Driver");
+	            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");  
+	            Statement statement = connection.createStatement() ;
+	            ResultSet resultset; 
+	            int amount = 0;
+	        	
+	            connection.setAutoCommit(false);
+
+                  
+                // Commit communicate with database
+                connection.commit();
+                connection.setAutoCommit(true);
+	            //check if shopping have item already
+	            resultset = statement.executeQuery("select * from shopping_cart where name = '" + product + "' and user_id = '"
+        				+session.getAttribute("user_id") + "'");
+	            if(resultset.next()){
+	            	amount = resultset.getInt("amount");
+	            	amount += Integer.parseInt(quantity);
+	            	statement.execute("update shopping_cart SET amount = '" + amount + "' where name = '"+ product + "' and user_id = '"
+	            				+session.getAttribute("user_id") + "'");
+	            	
+	            }else{
+					int user = (int)session.getAttribute("user_id");
+					conn.insertShopping(product, quantity, price, user);
+	            }
 			}	
 		}
 		

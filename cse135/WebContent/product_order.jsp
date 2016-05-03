@@ -6,7 +6,7 @@
 
 <%@page import="java.util.*, cse135.*" %>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>product_order</title>
 </head>
 <body>
 <table>
@@ -16,11 +16,23 @@
 		String product = request.getParameter("updated_name");
 		session.setAttribute("product_name", product);
 		session.setAttribute("product_price", request.getParameter("updated_price"));
+		
+		String roles = (String) session.getAttribute("roles");
+
+		if(user == null){%>
+			<SCRIPT TYPE="text/javascript">
+			alert("Request is invalid!");
+			window.location.href = "log_in.jsp"
+			</SCRIPT>
+		<%}
 	%>
 	<a href="shopping_cart.jsp" >Buy Shopping Cart</a>
 	<br>
 	<h1>Welcome: <%=user%></h1>
-	
+	<form action="log_in.jsp" method="post">
+		<% session.setAttribute("user_name" , null);%>
+		<INPUT TYPE=SUBMIT VALUE="Log out">
+	</form>
     <tr>     
         <td>
 		<%@ page import="java.sql.*"%>
@@ -33,13 +45,10 @@
             ResultSet resultset; 
         %>
 		
-		
-   
-	
 	<form action="order_process.jsp" method="post">
 	 	<p>Product Picked: <%=product%></p>
 		<p>
-			Amount: <input type="text" size="4" name="amount" />
+			Amount: <input type="text" size="10" name="amount" />
 		<p />
 		<input type="submit" value="Click to Order" />
 	</form>
@@ -48,7 +57,7 @@
         <%-- -------- Product Table -------- --%>
 		<%
 
-			resultset = statement.executeQuery("select * from shopping_cart") ; 
+			resultset = statement.executeQuery("select * from shopping_cart where user_id = '" +(int)session.getAttribute("user_id") + "'") ; 
         %>
         <!-- html table format -->
             <table border="1">

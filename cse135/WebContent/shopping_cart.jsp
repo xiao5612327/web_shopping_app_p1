@@ -4,18 +4,29 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>shopping_cart</title>
 </head>
 <body>
 	<table>
 
 	<%
 		String user = (String) session.getAttribute("user_name");
+		String roles = (String) session.getAttribute("roles");
 
+	if(user == null ){%>
+		<SCRIPT TYPE="text/javascript">
+		alert("Request is invalid!");
+		window.location.href = "log_in.jsp"
+		</SCRIPT>
+	<%}
+	
 	%>
 	<br>
 	<h1>Welcome: <%=user%></h1>
-	
+	<form action="log_in.jsp" method="post">
+		<% session.setAttribute("user_name" , null);%>
+		<INPUT TYPE=SUBMIT VALUE="Log out">
+	</form>
     <tr>     
         <td>
 		<%@ page import="java.sql.*"%>
@@ -31,7 +42,7 @@
 
         <%-- -------- Product Table -------- --%>
 		<%
-			resultset = statement.executeQuery("select * from shopping_cart") ; 
+		resultset = statement.executeQuery("select * from shopping_cart where user_id = '" +(int)session.getAttribute("user_id") + "'") ; 
         %>
         <!-- html table format -->
             <table border="2">
