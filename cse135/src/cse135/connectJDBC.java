@@ -122,6 +122,34 @@ public class connectJDBC {
 		return false;
 	}
 	
+	public Boolean checkCategoryName(String categoryName)
+	{
+		Connection c = null;
+		Statement pstmt = null;
+		ResultSet resultSet;
+
+		try {
+			Class.forName("org.postgresql.Driver");
+			c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		
+		try {
+			pstmt = c.createStatement();
+			resultSet = pstmt.executeQuery("SELECT category_name FROM categories WHERE category_name='"+categoryName+"'");
+			if (!resultSet.isBeforeFirst() ) {    
+				 return true;
+			} 
+			c.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public Boolean insertProduct(String name, String sku, String category, String price) throws SQLException {
 		Connection c = null;
 		Statement pstmt = null;
