@@ -162,22 +162,26 @@
             <tr>
                 <form action="product_order.jsp" method="POST">
                     <input type="hidden" name="action" value="update"/>
+                    <input type="hidden" name="updated_name" value="<%=resultset.getString("product_name")%>"/>
+                    <input type="hidden" name="updated_sku" value="<%=resultset.getString("sku")%>"/>
+                    <input type="hidden" name="updated_category" value="<%=(String)session.getAttribute(resultset.getString("category_id"))%>"/>
+                    <input type="hidden" name="updated_price" value="<%=resultset.getString("price")%>"/>
 
                 <%-- a id to track all insert delete and update --%>
                 <td>
-                    <input value="<%=resultset.getString("product_name")%>" name="updated_name" size="15"/>
+                    <%=resultset.getString("product_name")%>
                 </td>
                 
                 <td>
-                    <input value="<%=resultset.getString("sku")%>" name="updated_sku" size="15"/>
+                    <%=resultset.getString("sku")%>
                 </td>
                 
                 <td>
-                	<input value="<%=(String)session.getAttribute(resultset.getString("category_id")) %>" name="updated_category" size="15"/>
+                	<%=(String)session.getAttribute(resultset.getString("category_id")) %>
                 </td>
                 
                 <td>
-                    <input value="<%=resultset.getString("price")%>" name="updated_price" size="15"/>
+                    <%=resultset.getString("price")%>
                 </td>
 	
 

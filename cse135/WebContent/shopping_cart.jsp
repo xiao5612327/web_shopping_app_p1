@@ -86,15 +86,15 @@
 
                 <%-- a id to track all insert delete and update --%>
                 <td>
-                    <input value="<%=resultset.getString("name")%>" name="shopping_cart_name" size="15"/>
+                    "<%=resultset.getString("name")%>
                 </td>
                 
                 <td>
-                    <input value="<%=resultset.getString("amount")%>" name="shopping_cart_amount" size="15"/>
+                    <%=resultset.getString("amount")%>
                 </td>
                 
                 <td>
-                    <input value="<%=resultset.getString("price")%>" name="shopping_cart_price" size="15"/>
+                    <%=resultset.getString("price")%>
                 </td>
 
 				<td></td>
@@ -117,7 +117,7 @@
 </table>
 
 <form name="myForm" action="confirmation.jsp" onsubmit="return validateForm()" method="post">
-	Enter Your Credit Card Numbers here:
+	Enter Your Credit Card Number here:
 	<br>
 	<input type='text' name='credit_card' maxlength=20 size=35>
 		<SCRIPT TYPE="text/javascript">
