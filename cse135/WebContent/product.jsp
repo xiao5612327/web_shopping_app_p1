@@ -56,7 +56,7 @@
             
             <% 
 	        	Class.forName("org.postgresql.Driver");
-	            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");  
+	            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/shopping", "postgres", "Asdf!23");  
 	            Statement statement = connection.createStatement() ;
 	            PreparedStatement pstmt = null;
 	            ResultSet resultset; 
@@ -136,12 +136,12 @@
 					String insertSku = request.getParameter("product_sku");
 					String insertCategory = request.getParameter("product_category");
 					String insertPrice = request.getParameter("product_price");
-					
+
+					connectJDBC conn = new connectJDBC();
 					int priceInt = -1;
-					if ( insertPrice == null || insertPrice.trim().length() == 0 ) {}
+					if ( insertPrice == null || insertPrice.trim().length() == 0 || !conn.checkInt(insertPrice)) {}
 					else priceInt = Integer.parseInt(insertPrice);
 					
-					connectJDBC conn = new connectJDBC();
 					// Check product name
 					// Check if valid name
 					if ( insertName == null || insertName.trim().length() == 0 )
