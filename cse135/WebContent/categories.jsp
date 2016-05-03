@@ -5,7 +5,7 @@
    
 <head>
 
-<%@page import="java.util.*, cse135.category.*" %>
+<%@page import="java.util.*, cse135.*" %>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
@@ -72,7 +72,8 @@
             Connection c =  null;
             PreparedStatement pstmt = null;
             ResultSet rs = null;
-     
+
+    		connectJDBC conn = new connectJDBC();
             try {
             	Class.forName("org.postgresql.Driver");
     			c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");
@@ -91,14 +92,15 @@
                 	String checkName = request.getParameter("name");
                 	
                 	//checking categories name is not null
-                	if( checkName == null || checkName.trim().length() == 0){
+                	if( checkName == null || checkName.trim().length() == 0 || !conn.checkCategoryName(checkName)){
                 		%> 
             
-						<h3 style="color:red">Data modification failure!  Category Name Can't Be Null</h3>
+						<h3 style="color:red">Data modification failure!  Category Name Error!</h3>
                 		<% 
                 		
                 		
-                	}else{
+                	}
+            		else{
                 	//begin communicate with database
                     c.setAutoCommit(false);
 

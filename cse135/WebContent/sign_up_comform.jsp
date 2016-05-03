@@ -36,7 +36,7 @@
 		if(ageRange == true && userName == true){%>
 		
 			<sql:setDataSource var="snapshot" driver="org.postgresql.Driver"
-     		url="jdbc:postgresql://localhost:5432/shopping"
+     		url="jdbc:postgresql://localhost:5433/shopping"
      		user="postgres"  password="Asdf!23"/>
  
 			<sql:query dataSource="${snapshot}" var="result">
