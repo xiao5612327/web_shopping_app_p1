@@ -42,7 +42,7 @@
      
             try {
             	Class.forName("org.postgresql.Driver");
-    			c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/shopping", "postgres", "Asdf!23");
+    			c = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");
     			
     			ResultSet resultset = null; 
             	Statement statement1 = c.createStatement() ;

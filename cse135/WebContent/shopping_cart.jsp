@@ -30,7 +30,7 @@
 
         <% 
         	Class.forName("org.postgresql.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/shopping", "postgres", "Asdf!23");  
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");  
             Statement statement = connection.createStatement() ;
             ResultSet resultset; 
         %>
