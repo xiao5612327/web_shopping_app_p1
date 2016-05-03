@@ -38,8 +38,8 @@ CREATE TABLE history (
     user_name_id 	int references users(id) NOT NULL
 );
 
-insert into users (user_name, roles, age, state) values('kevin', 	'onwer', 	'22', 'CA');
-insert into users (user_name, roles, age, state) values('ray', 		'onwer', 	'23', 'NY');
+insert into users (user_name, roles, age, state) values('kevin', 	'owner', 	'22', 'CA');
+insert into users (user_name, roles, age, state) values('ray', 		'owner', 	'23', 'NY');
 insert into users (user_name, roles, age, state) values('weng', 	'customer', '24', 'CA');
 
 insert into categories (category_name, description) values('labtop', 	'this is for labtop categories.');
