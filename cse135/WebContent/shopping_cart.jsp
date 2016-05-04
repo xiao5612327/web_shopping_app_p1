@@ -86,7 +86,7 @@
 
                 <%-- a id to track all insert delete and update --%>
                 <td>
-                    "<%=resultset.getString("name")%>
+                    <%=resultset.getString("name")%>
                 </td>
                 
                 <td>
