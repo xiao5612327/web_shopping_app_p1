@@ -34,8 +34,8 @@ CREATE TABLE history (
     data			VARCHAR(30),
     amount   		integer,
     price       	integer,
-    product_id  	int references products(id) NOT NULL,
-    user_name_id 	int references users(id) NOT NULL
+    product_id  	integer references products(id) NOT NULL,
+    user_name_id 	integer references users(id) NOT NULL
 );
 
 insert into users (user_name, roles, age, state) values('kevin', 	'owner', 	'22', 'CA');

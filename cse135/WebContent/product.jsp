@@ -223,9 +223,9 @@
                 int ca_id = Integer.parseInt(temp1);
                 pstmt.setInt(4, ca_id);
                 pstmt.setInt(5, Integer.parseInt(request.getParameter("id")));
-                int rowHistory = pstmtHistory.executeUpdate();
-                int rowShoppingCart = pstmtShoppingCart.executeUpdate();
                 int row = pstmt.executeUpdate();
+                int rowShoppingCart = pstmtShoppingCart.executeUpdate();
+                int rowHistory = pstmtHistory.executeUpdate();
                   
                 // Commit communicate with database
                 connection.commit();

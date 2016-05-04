@@ -39,7 +39,22 @@
 			</SCRIPT>
 		<%}
 	%>
-
+		<%@ page import="java.sql.*"%>
+		<% 
+	        	Class.forName("org.postgresql.Driver");
+	            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5433/shopping", "postgres", "Asdf!23");  
+	            Statement statement = connection.createStatement() ;
+	            PreparedStatement pstmt = null;
+	            ResultSet resultset; 
+	            
+	    %>
+		<%		
+	       		resultset = statement.executeQuery("select * from users where user_name = '" + user + "'");
+	       		if(resultset.next()){
+	       	
+	       			session.setAttribute("user_id", resultset.getInt("id"));
+	       		}
+	%>
 	<h1>Welcome: <%=roles%> <%=user%></h1>
 
 	<form action="log_in.jsp" method="post">
